@@ -146,9 +146,12 @@ def get_data_missing_values():
 
 def get_histogram():
     """
-    Function to plot histograms for each feature in the cleaned dataset.
+    Function to plot histograms for the 'diagnosis' feature in the cleaned dataset.
     """
-    df_cleaned.hist(bins=30, figsize=(20, 15))
+    df_cleaned['diagnosis'].hist(bins=30)
+    plt.xlabel('Diagnosis')
+    plt.ylabel('Frequency')
+    plt.title('Histogram of Diagnosis')
     plt.show()
 
 def correlation_matrix():
@@ -161,10 +164,12 @@ def correlation_matrix():
     plt.title('Correlation Matrix Heatmap (Cleaned)')
     plt.show()
 
-def perform_regression():
-    """
-    Placeholder function for regression analysis (to be implemented).
-    """
+def Scatter():
+    # make scatter plot of the data between 'radius_mean' and 'texture_mean'
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(x='radius_mean', y='texture_mean', data=df_cleaned, hue='diagnosis')
+    plt.title('Scatter Plot of Radius Mean vs. Texture Mean')
+    plt.show()
     pass
 
 # Mapping of data methods to corresponding functions
@@ -175,7 +180,7 @@ data_methods = {
     'Data Cleaning': DataCleaning,
     'Histogram': get_histogram,
     'Correlation Matrix': correlation_matrix,
-    'Regression': perform_regression,
+    'Scatter': Scatter,
     'Decision Tree': train_decision_tree,
     'KNN': knn,
     'Naive Bayes': naive_bayes,
@@ -185,7 +190,7 @@ data_methods = {
 # Mapping of category operations to corresponding methods
 category_operations = {
     'Preprocessing': ['Data Head', 'Data Describe', 'Data Missing Values', 'Data Cleaning'],
-    'Graphs': ['Histogram', 'Correlation Matrix', 'Regression'],
+    'Graphs': ['Histogram', 'Correlation Matrix', 'Scatter'],
     'Classifiers': ['Decision Tree', 'KNN', 'Naive Bayes', 'SVM']
 }
 
