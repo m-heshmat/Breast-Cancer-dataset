@@ -176,9 +176,16 @@ def update_operations(*args):
 
 def display_data():
     method = operations_combo.get()
-    if method in data_methods:
+    if method == 'KNN':
+        train_and_evaluate(KNeighborsClassifier(), "KNN")
+    elif method == 'Naive Bayes':
+        train_and_evaluate(GaussianNB(), "Naive Bayes")
+    elif method == 'SVM':
+        train_and_evaluate(SVC(), "SVM")
+    elif method in data_methods:
         result = data_methods[method]()
         update_text_area(result)
+
 
         
 
