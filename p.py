@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import ttk
 import pandas as pd
@@ -136,10 +135,9 @@ def get_scatter_plot():
     plt.show()
 
 
-
 def perform_regression():
     model = LinearRegression()
-    X = data[['paid']]
+    X = data[['age']]
     y = data['G3']
     model.fit(X, y)
     predictions = model.predict(X)
@@ -157,7 +155,6 @@ data_methods = {
     'Data Cleaning' : DataCleaning,
     'Histogram': get_histogram,
     'Scatter Plot': get_scatter_plot,
-    
     'Regression': perform_regression,
     'Decision Tree': train_decision_tree,
     'KNN': knn,
