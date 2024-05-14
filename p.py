@@ -34,12 +34,10 @@ def DataCleaning():
     scaler = StandardScaler()
     df[features] = scaler.fit_transform(df[features])
     
-    # Remove outliers
-    Q1 = df[features].quantile(0.25)
-    Q3 = df[features].quantile(0.75)
-    IQR = Q3 - Q1
-    outlier_condition = ((df[features] < (Q1 - 1.5 * IQR)) | (df[features] > (Q3 + 1.5 * IQR))).any(axis=1)
-    df_cleaned = df[~outlier_condition]
+    # Remove outliers using Z-score
+    z_scores = (df[features] - df[features].mean()) / df[features].std()
+    outlier_condition = (z_scores.abs() < 3).all(axis=1)
+    df_cleaned = df[outlier_condition]
     
     return df_cleaned
 
