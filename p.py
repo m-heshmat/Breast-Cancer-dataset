@@ -11,23 +11,43 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import matplotlib.pyplot as plt
 from sklearn import tree
 from sklearn.cluster import KMeans
-from sklearn.linear_model import LinearRegression       
+from sklearn.linear_model import LinearRegression  
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from scipy import stats
+import pandas as pd
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn import metrics
+import matplotlib.pyplot as plt
 
-#test github
-#heshmat
+def DataCleaning():
+    # 1. Load the dataset
+    df = pd.read_csv('student-por.csv')
+    # 2. Encode categorical labels
+    categorical_columns = ['school', 'sex', 'address', 'famsize', 'Pstatus', 'Mjob', 'Fjob', 'reason', 'guardian', 'schoolsup', 'famsup', 'paid', 'activities', 'nursery', 'higher', 'internet', 'romantic']
+    label_encoder = LabelEncoder()
+    for column in categorical_columns:
+        df[column] = label_encoder.fit_transform(df[column])
+    # 3. Standardize numerical features
+    scaler = StandardScaler()
+    # 4. identify the numerical columns
+    numerical_columns = ['age', 'Medu', 'Fedu', 'traveltime', 'studytime', 'failures', 'famrel', 'freetime', 'goout', 'Dalc', 'Walc', 'health', 'absences', 'G1', 'G2', 'G3']
+    for column in numerical_columns:
+        df[column] = scaler.fit_transform(df[[column]])
+    # 5. identify the outliers in the numerical columns and remove them
+    # Calculate Z-scores for each numerical column
+    z_scores = stats.zscore(df[numerical_columns])
+    # Detect outliers using the Z-score method
+    outlier_condition = (abs(z_scores) > 3).any(axis=1)
+    df_cleaned = df[~outlier_condition]
+    return df_cleaned
 
-# Load the dataset
-data = pd.read_csv('student-por.csv')
-
-# Preprocessing for demonstration purposes
-data['age_squared'] = data['age'] ** 2  # Example feature engineering
-features = ['age', 'absences', 'age_squared']  # Example features
-data['pass'] = data['G3'] >= 10  # Example target based on a condition
-X = data[features]
-y = data['pass']
+df_cleaned=DataCleaning()
+X = df_cleaned.drop('paid', axis=1)
+y = df_cleaned['paid']
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 def train_and_evaluate(classifier, name):
     classifier.fit(X_train, y_train)
@@ -47,20 +67,36 @@ def train_and_evaluate(classifier, name):
     update_text_area(result_text)
 
 def train_decision_tree():
-    dt_classifier = DecisionTreeClassifier()
-    dt_classifier.fit(X_train, y_train)
-    y_pred = dt_classifier.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
+    # Initialize the Decision Tree Classifier
+    clf = DecisionTreeClassifier(random_state=42)
+    # Hyperparameter tuning using GridSearchCV
+    param_grid = {
+        'criterion': ['gini', 'entropy'],
+        'max_depth': [None, 10, 20, 30, 40, 50],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'max_features': [None, 'sqrt', 'log2']
+    }
     
-    # Display results in the text area
-    result_text = f"Decision Tree Accuracy: {accuracy}\nConfusion Matrix:\n{cm}"
-    update_text_area(result_text)
-    
-    # Optionally, plot the tree
+    grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=5, n_jobs=-1, verbose=2)
+    grid_search.fit(X_train, y_train)
+
+    # Get the best parameters and train the final model
+    best_clf = grid_search.best_estimator_
+    best_clf.fit(X_train, y_train)
+
+    # Make predictions
+    y_pred = best_clf.predict(X_test)
+
+    # Evaluate the model
+    accuracy = metrics.accuracy_score(y_test, y_pred)
+    print(f"Accuracy: {accuracy}")
+
+    # Visualize the decision tree
     plt.figure(figsize=(20,10))
-    tree.plot_tree(dt_classifier, filled=True, feature_names=features)
+    plot_tree(best_clf, filled=True, feature_names=X.columns, class_names=True, rounded=True)
     plt.show()
+    
 
 def knn():
     train_and_evaluate(KNeighborsClassifier(), "KNN")
@@ -71,22 +107,6 @@ def naive_bayes():
 def svm():
     train_and_evaluate(SVC(), "SVM")
 
-# Decision Tree Classifier
-def train_decision_tree():
-    dt_classifier = DecisionTreeClassifier()
-    dt_classifier.fit(X_train, y_train)
-    y_pred = dt_classifier.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
-    
-    # Display results in the text area
-    result_text = f"Decision Tree Accuracy: {accuracy}\nConfusion Matrix:\n{cm}"
-    update_text_area(result_text)
-    
-    # Optionally, plot the tree
-    plt.figure(figsize=(20,10))
-    tree.plot_tree(dt_classifier, filled=True, feature_names=features)
-    plt.show()
 
 # Define data functions
 def get_data_head():
