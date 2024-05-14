@@ -206,12 +206,10 @@ root.title("Data Display GUI")
 root.geometry('800x600')
 
 # Assuming you have defined specific classifier buttons in your GUI that call this function:
-dt_button = ttk.Button(root, text="Train & Evaluate Decision Tree", command=lambda: train_and_evaluate(DecisionTreeClassifier(), "Decision Tree"))
 knn_button = ttk.Button(root, text="Train & Evaluate KNN", command=lambda: train_and_evaluate(KNeighborsClassifier(), "KNN"))
 nb_button = ttk.Button(root, text="Train & Evaluate Naive Bayes", command=lambda: train_and_evaluate(GaussianNB(), "Naive Bayes"))
 svm_button = ttk.Button(root, text="Train & Evaluate SVM", command=lambda: train_and_evaluate(SVC(), "SVM"))
 
-dt_button.pack(pady=10)
 knn_button.pack(pady=10)
 nb_button.pack(pady=10)
 svm_button.pack(pady=10)
