@@ -68,6 +68,7 @@ def train_and_evaluate(classifier, name):
                    f"Confusion Matrix:\n{cm}")
     update_text_area(result_text)
 
+
 def train_decision_tree():
     # Initialize the Decision Tree Classifier
     clf = DecisionTreeClassifier(random_state=42)
@@ -179,6 +180,8 @@ def display_data():
         result = data_methods[method]()
         update_text_area(result)
 
+        
+
 def on_search_entry_change(*args):
     search_query = search_var.get().title()
     matching_methods = [method for method in data_methods if search_query in method]
@@ -201,6 +204,18 @@ def update_text_area(text):
 root = tk.Tk()
 root.title("Data Display GUI")
 root.geometry('800x600')
+
+# Assuming you have defined specific classifier buttons in your GUI that call this function:
+dt_button = ttk.Button(root, text="Train & Evaluate Decision Tree", command=lambda: train_and_evaluate(DecisionTreeClassifier(), "Decision Tree"))
+knn_button = ttk.Button(root, text="Train & Evaluate KNN", command=lambda: train_and_evaluate(KNeighborsClassifier(), "KNN"))
+nb_button = ttk.Button(root, text="Train & Evaluate Naive Bayes", command=lambda: train_and_evaluate(GaussianNB(), "Naive Bayes"))
+svm_button = ttk.Button(root, text="Train & Evaluate SVM", command=lambda: train_and_evaluate(SVC(), "SVM"))
+
+dt_button.pack(pady=10)
+knn_button.pack(pady=10)
+nb_button.pack(pady=10)
+svm_button.pack(pady=10)
+
 
 # Category selector, previously lecture selector
 category_combo = ttk.Combobox(root, values=list(category_operations.keys()), state="readonly", width=50)
