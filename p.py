@@ -135,18 +135,11 @@ def get_scatter_plot():
     plt.ylabel('Final Grade (G3)')
     plt.show()
 
-def perform_clustering():
-    kmeans = KMeans(n_clusters=3)
-    data['cluster'] = kmeans.fit_predict(data[features])
-    plt.scatter(data['paid'], data['G3'], c=data['cluster'], cmap='viridis', alpha=0.5)
-    plt.title('Clustering of Age vs G3')
-    plt.xlabel('paid')
-    plt.ylabel('Final Grade (G3)')
-    plt.show()
+
 
 def perform_regression():
     model = LinearRegression()
-    X = data[['age']]
+    X = data[['paid']]
     y = data['G3']
     model.fit(X, y)
     predictions = model.predict(X)
@@ -164,7 +157,7 @@ data_methods = {
     'Data Cleaning' : DataCleaning,
     'Histogram': get_histogram,
     'Scatter Plot': get_scatter_plot,
-    'Clustering': perform_clustering,
+    
     'Regression': perform_regression,
     'Decision Tree': train_decision_tree,
     'KNN': knn,
@@ -174,7 +167,7 @@ data_methods = {
 
 category_operations = {
     'Preprocessing': ['Data Head', 'Data Describe', 'Data Missing Values','Data Cleaning'],
-    'Graphs': ['Histogram', 'Scatter Plot', 'Clustering', 'Regression'],
+    'Graphs': ['Histogram', 'Scatter Plot', 'Regression'],
     'Classifiers': ['Decision Tree', 'KNN', 'Naive Bayes', 'SVM']
 }
 
