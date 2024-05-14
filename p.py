@@ -1,3 +1,4 @@
+
 import tkinter as tk
 from tkinter import ttk
 import pandas as pd
@@ -20,26 +21,28 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn import metrics
 import matplotlib.pyplot as plt
 
+data = pd.read_csv('student-por.csv')
+
 def DataCleaning():
     # 1. Load the dataset
-    df = pd.read_csv('student-por.csv')
+    data = pd.read_csv('student-por.csv')
     # 2. Encode categorical labels
     categorical_columns = ['school', 'sex', 'address', 'famsize', 'Pstatus', 'Mjob', 'Fjob', 'reason', 'guardian', 'schoolsup', 'famsup', 'paid', 'activities', 'nursery', 'higher', 'internet', 'romantic']
     label_encoder = LabelEncoder()
     for column in categorical_columns:
-        df[column] = label_encoder.fit_transform(df[column])
+        data[column] = label_encoder.fit_transform(data[column])
     # 3. Standardize numerical features
     scaler = StandardScaler()
     # 4. identify the numerical columns
     numerical_columns = ['age', 'Medu', 'Fedu', 'traveltime', 'studytime', 'failures', 'famrel', 'freetime', 'goout', 'Dalc', 'Walc', 'health', 'absences', 'G1', 'G2', 'G3']
     for column in numerical_columns:
-        df[column] = scaler.fit_transform(df[[column]])
+        data[column] = scaler.fit_transform(data[[column]])
     # 5. identify the outliers in the numerical columns and remove them
     # Calculate Z-scores for each numerical column
-    z_scores = stats.zscore(df[numerical_columns])
+    z_scores = stats.zscore(data[numerical_columns])
     # Detect outliers using the Z-score method
     outlier_condition = (abs(z_scores) > 3).any(axis=1)
-    df_cleaned = df[~outlier_condition]
+    df_cleaned = data[~outlier_condition]
     return df_cleaned
 
 df_cleaned=DataCleaning()
@@ -119,25 +122,25 @@ def get_data_missing_values():
     return data.isnull().sum().to_string()
 
 def get_histogram():
-    plt.hist(data['age'], bins=10, color='blue')
-    plt.title('Distribution of Age')
-    plt.xlabel('Age')
+    plt.hist(data['age'], bins=10, color='black')
+    plt.title('Distribution of paid')
+    plt.xlabel('paid')
     plt.ylabel('Frequency')
     plt.show()
 
 def get_scatter_plot():
     plt.scatter(data['age'], data['G3'], alpha=0.5)
-    plt.title('Scatter plot of Age vs G3')
-    plt.xlabel('Age')
+    plt.title('Scatter plot of paid vs G3')
+    plt.xlabel('paid')
     plt.ylabel('Final Grade (G3)')
     plt.show()
 
 def perform_clustering():
     kmeans = KMeans(n_clusters=3)
     data['cluster'] = kmeans.fit_predict(data[features])
-    plt.scatter(data['age'], data['G3'], c=data['cluster'], cmap='viridis', alpha=0.5)
+    plt.scatter(data['paid'], data['G3'], c=data['cluster'], cmap='viridis', alpha=0.5)
     plt.title('Clustering of Age vs G3')
-    plt.xlabel('Age')
+    plt.xlabel('paid')
     plt.ylabel('Final Grade (G3)')
     plt.show()
 
@@ -147,10 +150,10 @@ def perform_regression():
     y = data['G3']
     model.fit(X, y)
     predictions = model.predict(X)
-    plt.scatter(data['age'], data['G3'], alpha=0.5)
-    plt.plot(data['age'], predictions, color='red')
-    plt.title('Linear Regression on Age vs G3')
-    plt.xlabel('Age')
+    plt.scatter(data['paid'], data['G3'], alpha=0.5)
+    plt.plot(data['paid'], predictions, color='red')
+    plt.title('Linear Regression on paid vs G3')
+    plt.xlabel('paid')
     plt.ylabel('Final Grade (G3)')
     plt.show()       
 
@@ -158,6 +161,7 @@ data_methods = {
     'Data Head': get_data_head,
     'Data Describe': get_data_describe,
     'Data Missing Values': get_data_missing_values,
+    'Data Cleaning' : DataCleaning,
     'Histogram': get_histogram,
     'Scatter Plot': get_scatter_plot,
     'Clustering': perform_clustering,
@@ -169,7 +173,7 @@ data_methods = {
 }
 
 category_operations = {
-    'Preprocessing': ['Data Head', 'Data Describe', 'Data Missing Values'],
+    'Preprocessing': ['Data Head', 'Data Describe', 'Data Missing Values','Data Cleaning'],
     'Graphs': ['Histogram', 'Scatter Plot', 'Clustering', 'Regression'],
     'Classifiers': ['Decision Tree', 'KNN', 'Naive Bayes', 'SVM']
 }
