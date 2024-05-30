@@ -1,15 +1,21 @@
 **Idea**
+
+
 This project focuses on using various machine learning techniques
 to classify and cluster breast cancer cases. The project employs a
 wide array of classifiers methods, detailing their implementation
 and functionality.
 
 **Dataset**
+
+
 The dataset for this project is sourced from a public breast cancer
 dataset, including various attributes essential for cancer
 classification and analysis.
 
 **Preprocessing steps**
+
+
 The preprocessing involves several key steps to optimize the
 data:
 1. Removing Unnecessary Columns: Drops columns like 'id'
