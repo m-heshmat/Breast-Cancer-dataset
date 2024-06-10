@@ -3,7 +3,7 @@
 
 This project focuses on using various machine learning techniques
 to classify and cluster breast cancer cases. The project employs a
-wide array of classifiers methods, detailing their implementation
+wide array of classifiers methods, with a GUI, detailing their implementation
 and functionality.
 
 **Dataset**
